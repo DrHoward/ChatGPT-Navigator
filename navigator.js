@@ -4,45 +4,52 @@
     const allowedHost = "chatgpt.com";
     if (!location.hostname.includes(allowedHost)) return;
 
+    let closestIndex = null;
+
     function getUserMessages() {
         // grab all messages with "user" author role
         return Array.from(document.querySelectorAll('div[data-message-author-role="user"]'));
     }
 
     function getClosestIndex(messages, direction) {
-        let closestIndex = null;
-        let minDistance = Infinity;
-        const centerY = window.innerHeight / 2;
+        if (!messages.length) return null;
 
+        let closest = null;
+        let closestDistance = Infinity;
+        
         messages.forEach((el, i) => {
             const rect = el.getBoundingClientRect();
-            const elCenter = rect.top + rect.height / 2;
-            const offset = elCenter - centerY;
-            //console.log({i, offset});
-            // FIXME: offset on centered message is -4 but gets stuck on it regardless
+            const offset = rect.top;
+            console.log({i, offset});
 
-            if (Math.abs(offset) < 5) {
-                return closestIndex = { 'up': i - 1, 'down': i + 1 }[direction];
-            }
+            if (offset === 0) return;
 
-            if ((direction === 'up' && offset < 0 && Math.abs(offset) < minDistance) ||
-                    (direction === 'down' && offset >= 0 && offset < minDistance)) {
-                minDistance = Math.abs(offset);
-                closestIndex = i;
+            if (direction === 'up') {
+                if (offset < 0 && Math.abs(offset) < closestDistance) {
+                    closestDistance = Math.abs(offset);
+                    closest = i;
+                }
+            } else if (direction === 'down') {
+                if (offset > 0 && offset < closestDistance) {
+                    closestDistance = offset;
+                    closest = i;
+                }
             }
         });
 
-        return closestIndex;
+        return closest;
     }
 
     function scrollToMessage(msg) {
         if (!msg) return;
 
+        container = document.scrollingElement;
         const rect = msg.getBoundingClientRect();
-        const scrollY = window.scrollY + rect.top - offsetFromTop;
-        window.scrollTo({ top: scrollY, behavior: 'smooth' });
+        const scrollTop = container.scrollTop;
+        const offsetTop = rect.top + scrollTop;
+        container.scrollTo({ top: offsetTop, behavior: 'smooth' });
 
-        //msg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        //msg.scrollIntoView({ behavior: 'smooth', block: 'start' });
         msg.style.outline = '2px solid #00bfff';
         setTimeout(() => msg.style.outline = '', 800);
     }
@@ -53,7 +60,8 @@
         const messages = getUserMessages();
         if (!messages.length) return;
 
-        const dir = { 'scroll-up': 'up', 'scroll-down': 'down' }[command] || null;
-        if (dir) scrollToMessage(messages[getClosestIndex(messages, dir)]);
+        const direction = { 'scroll-up': 'up', 'scroll-down': 'down' }[command] || null;
+        closestIndex = getClosestIndex(messages, direction);
+        if (direction && closestIndex) scrollToMessage(messages[closestIndex]);
     });
 })();
