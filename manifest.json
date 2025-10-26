@@ -1,0 +1,27 @@
+{
+    "manifest_version": 3,
+    "name": "ChatGPT Message Navigator",
+    "version": "0.1.0",
+    "description": "Extends navigation functionality within the web ChatGPT interface using shortcuts.",
+    "permissions": ["scripting", "activeTab"],
+    "background": {
+        "service_worker": "background.js"
+    },
+    "content_scripts": [
+        {
+            "matches": ["https://chat.openai.com/*"],
+            "js": ["navigator.js"],
+            "run_at": "document_end"
+        }
+    ],
+    "commands": {
+        "scroll-up": {
+            "suggested_key": { "default": "Ctrl+Up" },
+            "description": "Jump to previous user message"
+        },
+        "scroll-down": {
+            "suggested_key": { "default": "Ctrl+Down" },
+            "description": "Jump to next user message"
+        }
+    }
+}
