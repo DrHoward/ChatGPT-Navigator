@@ -1,8 +1,8 @@
 {
     "manifest_version": 3,
-    "name": "ChatGPT Message Navigator",
+    "name": "ChatGPT Interface Plus",
     "version": "0.1.0",
-    "description": "Extends navigation functionality within the web ChatGPT interface using shortcuts.",
+    "description": "Extends display and navigation functionality within the ChatGPT web interface",
     "permissions": ["scripting", "activeTab"],
     "background": {
         "service_worker": "background.js"
