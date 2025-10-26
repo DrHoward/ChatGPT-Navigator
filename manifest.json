@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "ChatGPT Interface Plus",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "Extends display and navigation functionality within the ChatGPT web interface",
     "permissions": ["scripting", "activeTab"],
     "background": {
