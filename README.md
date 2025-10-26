@@ -10,10 +10,10 @@ Tired of scrolling? Use Ctrl + Up and Ctrl + Down to focus the next or previous 
 ## Future Features
 
 ### String Bookmarks
-Highlight a string of text and save it for later without losing your place on the page or directly queueing it up in the reply. Supports a configurable hotkey to easily append to existing bookmarks (Default: <HOTKEY TBD>).
+Highlight a string of text and save it for later without losing your place on the page or directly queueing it up in the reply. Supports a configurable hotkey to easily append to existing bookmarks (Default: HOTKEY_TBD).
 
 ### Scratch Pad
-Collapsible side bar to track bookmarks and write general notes for followup. Use <HOTKEY TBD> to open/close it.
+Collapsible side bar to track bookmarks and write general notes for followup. Use HOTKEY_TBD to open/close it.
 
 ### Bookmark Quick Jump
 Immediately jumps to the saved string, even if it's buried in the chat history.
