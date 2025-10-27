@@ -1,67 +1,36 @@
 // manipulates ChatGPT interface based on received commands
 (function() {
-    // only run on ChatGPT site
-    const allowedHost = "chatgpt.com";
-    if (!location.hostname.includes(allowedHost)) return;
-
-    let closestIndex = null;
+    let currentIndex = 0;
 
     function getUserMessages() {
-        // grab all messages with "user" author role
+        // grab all message blocks with "user" author role
         return Array.from(document.querySelectorAll('div[data-message-author-role="user"]'));
     }
 
-    function getClosestIndex(messages, direction) {
-        if (!messages.length) return null;
-
-        let closest = null;
-        let closestDistance = Infinity;
+    function scrollToMessage(index) {
+        const messages = getUserMessages();
+        el = messages[index];
         
-        messages.forEach((el, i) => {
-            const rect = el.getBoundingClientRect();
-            const offset = rect.top;
-            console.log({i, offset});
-
-            if (offset === 0) return;
-
-            if (direction === 'up') {
-                if (offset < 0 && Math.abs(offset) < closestDistance) {
-                    closestDistance = Math.abs(offset);
-                    closest = i;
-                }
-            } else if (direction === 'down') {
-                if (offset > 0 && offset < closestDistance) {
-                    closestDistance = offset;
-                    closest = i;
-                }
-            }
-        });
-
-        return closest;
-    }
-
-    function scrollToMessage(msg) {
-        if (!msg) return;
-
-        container = document.scrollingElement;
-        const rect = msg.getBoundingClientRect();
-        const scrollTop = container.scrollTop;
-        const offsetTop = rect.top + scrollTop;
-        container.scrollTo({ top: offsetTop, behavior: 'smooth' });
-
-        //msg.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        msg.style.outline = '2px solid #00bfff';
-        setTimeout(() => msg.style.outline = '', 800);
+        // POC
+        const rect = el.getBoundingClientRect();
+        const offset = rect.top;
+        console.log({offset});  // TODO: add the foreach loop of all elements
+        
+        if (messages[index]) {
+            messages[index].scrollIntoView({ behavior: 'smooth', block: 'start' });
+            messages[index].style.outline = '2px solid #00bfff';
+            setTimeout(() => messages[index].style.outline = '', 800);
+        }
     }
 
     window.addEventListener('message', (event) => {
         if (event.source !== window || event.data.source !== 'chatgpt-navigator') return;
         const { command } = event.data;
         const messages = getUserMessages();
-        if (!messages.length) return;
 
-        const direction = { 'scroll-up': 'up', 'scroll-down': 'down' }[command] || null;
-        closestIndex = getClosestIndex(messages, direction);
-        if (direction && closestIndex) scrollToMessage(messages[closestIndex]);
+        if (!messages.length) return;
+        if (command === 'scroll-up') currentIndex = Math.max(0, currentIndex - 1);
+        if (command === 'scroll-down') currentIndex = Math.min(messages.length - 1, currentIndex + 1);
+        scrollToMessage(currentIndex);
     });
 })();
