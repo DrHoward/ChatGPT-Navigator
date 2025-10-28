@@ -1,6 +1,6 @@
 // manipulates ChatGPT interface based on received commands
 (function() {
-    let currentIndex = -1;
+    let currentIndex = null;
 
     function getUserMessages() {
         // grab all message blocks with "user" author role
@@ -29,7 +29,7 @@
         const messages = getUserMessages();
 
         if (!messages.length) return;
-        if (currentIndex === -1) currentIndex = messages.length - 1;
+        if (currentIndex === null) currentIndex = messages.length - 1;
         if (command === 'scroll-up') currentIndex = Math.max(0, currentIndex - 1);
         if (command === 'scroll-down') currentIndex = Math.min(messages.length - 1, currentIndex + 1);
         scrollToMessage(currentIndex);
